@@ -7,6 +7,7 @@ import authRoute from "./routes/auth.route.js";
 import userRoute from "./routes/user.route.js";
 import courseRoute from "./routes/course.route.js";
 import { authenticate, authorizeRoles } from "./middlewares/auth.js";
+import assignmentRoute from "./routes/assignment.route.js";
 
 dotenv.config();
 
@@ -22,5 +23,11 @@ app.use("/init", initRoute);
 app.use("/auth", authRoute);
 app.use("/users", authenticate, authorizeRoles("admin"), userRoute);
 app.use("/courses", authenticate, courseRoute);
+app.use(
+  "/assignments",
+  authenticate, 
+  authorizeRoles("teacher", "admin"), 
+  assignmentRoute
+);
 
 export default app;
