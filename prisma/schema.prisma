@@ -44,7 +44,6 @@ model course_members {
   courses                     courses             @relation(fields: [fk_course_members_course_id], references: [course_id], onDelete: Cascade, map: "fk_course_members_course_id")
   users                       users               @relation(fields: [fk_course_members_user_id], references: [user_id], onDelete: Cascade, map: "fk_course_members_user_id")
 
-
   @@id([fk_course_members_course_id, fk_course_members_user_id])
   @@index([fk_course_members_course_id], map: "course_id_idx")
   @@index([fk_course_members_user_id], map: "user_id_idx")
