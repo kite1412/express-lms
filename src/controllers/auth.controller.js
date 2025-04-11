@@ -20,14 +20,27 @@ export const loginUser = async (req, res) => {
 };
 
 export const logoutUser = async (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    sameSite: "Strict",
-    path: "/",
-  });
+  try {
+    const token = req.cookies?.token;
 
-  return res.status(200).json({
-    success: true,
-    message: "Logout successful",
-  });
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "No active session found",
+      });
+    }
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "Strict",
+      path: "/",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
