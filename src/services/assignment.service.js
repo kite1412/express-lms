@@ -30,9 +30,44 @@ export const createAssignmentService = async ({
 };
 
 export const getAssignmentByIdService = async (id) => {
-  return await prisma.assignments.findUnique({
+  const assignment = await prisma.assignments.findUnique({
     where: {
       assignment_id: Number(id)
     }
-  })
+  });
+
+  if (!assignment) {
+    throw new HttpError(400, "No assignment with id " + id);
+  }
+  
+  return assignment;
+};
+
+export const updateAssignmentService = async (id, newData) => {
+  const assignment = await getAssignmentByIdService(id);
+
+  return await prisma.assignments.update({
+    where: {
+      assignment_id: Number(id)
+    },
+    data: {
+      title: newData.title ?? assignment.title,
+      description: newData.description ?? assignment.description,
+      deadline: newData.deadline ?? assignment.deadline,
+      file_url: newData.fileUrl ?? assignment.file_url
+    }
+  });
+};
+
+export const deleteAssignmentService = async (id) => {
+  await getAssignmentByIdService(id);
+
+  return await prisma.assignments.update({
+    where: {
+      assignment_id: Number(id)
+    },
+    data: {
+      deleted_at: new Date()
+    }
+  });
 };

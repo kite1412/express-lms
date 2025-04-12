@@ -1,8 +1,10 @@
 import express from "express";
 import {
   createAssignment,
+  deleteAssignment,
   getAssigmentsByCourseId,
-  getAssignmentById
+  getAssignmentById,
+  updateAssignment
 } from "../controllers/assignment.controller.js";
 import { authorizeRoles } from "../middlewares/auth.js";
 
@@ -17,6 +19,14 @@ assignmentRoute.post(
 assignmentRoute.get(
   "/:id", 
   getAssignmentById
-)
+);
+assignmentRoute.patch(
+  "/:id",
+  updateAssignment
+);
+assignmentRoute.delete(
+  "/:id",
+  deleteAssignment
+);
 
 export default assignmentRoute;

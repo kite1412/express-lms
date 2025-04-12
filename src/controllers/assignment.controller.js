@@ -1,15 +1,32 @@
-import { createAssignmentService, getAssignmentByIdService, getAssignmentsByCourseIdService } from "../services/assignment.service.js";
+import HttpError from "../errors/HttpError.js";
+import { createAssignmentService, deleteAssignmentService, getAssignmentByIdService, getAssignmentsByCourseIdService, updateAssignmentService } from "../services/assignment.service.js";
 import { sendServerErrorJson } from "../utils/responses.js";
+
+const errorResponse = (res, err) => {
+  if (err instanceof HttpError) {
+    res.status(err.code).json({
+      success: false,
+      message: err.message
+    })
+  } else {
+    sendServerErrorJson(res, err.message);
+  }
+};
+
+const successResponse = (res, data) => {
+  res.json({
+    success: true,
+    data: data
+  });
+};
 
 export const getAssigmentsByCourseId = async (req, res) => {
   try {
     const assignments = await getAssignmentsByCourseIdService(req.params.courseId);
-    res.json({
-      success: true,
-      data: assignments
-    });
+    
+    successResponse(res, assignments);
   } catch (e) {
-    sendServerErrorJson(res, e.message);
+    errorResponse(res, e);
   }
 }
 
@@ -23,24 +40,39 @@ export const createAssignment = async (req, res) => {
       deadline: new Date(body.deadline),
       fileUrl: body.fileUrl
     });
-    res.json({
-      success: true,
-      data: newAssignment
-    })
+
+    successResponse(res, newAssignment);
   } catch (e) {
-    sendServerErrorJson(res, e.message);
+    errorResponse(res, e);
   }
-}
+};
 
 export const getAssignmentById = async (req, res) => {
   try {
     const assignment = await getAssignmentByIdService(req.params.id);
 
-    res.json({
-      success: true,
-      data: assignment
-    });
+    successResponse(res, assignment)
   } catch (e) {
-    sendServerErrorJson(res, e.message);
+    errorResponse(res, e);
   }
-}
+};
+
+export const updateAssignment = async (req, res) => {
+  try {
+    const newAssignment = await updateAssignmentService(req.params.id, req.body);
+
+    successResponse(res, newAssignment);
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
+
+export const deleteAssignment = async (req, res) => {
+  try {
+    const deletedAssignment = await deleteAssignmentService(req.params.id);
+
+    successResponse(res, deletedAssignment);
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
