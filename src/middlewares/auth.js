@@ -2,15 +2,23 @@ import jwt from "jsonwebtoken";
 
 export const authenticate = (req, res, next) => {
   const token = req.cookies.token;
+  let authHeaderToken = req.headers.authorization;
 
-  if (!token) {
+  if (!token && !authHeaderToken) {
     return res
       .status(401)
       .json({ success: false, message: "Unauthorized: Token missing" });
   }
 
+  if (typeof authHeaderToken === "string") {
+    const content = authHeaderToken.split(" ");
+    if (content.length === 2) {
+      authHeaderToken = content[1];
+    }
+  }
+
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token || authHeaderToken, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
