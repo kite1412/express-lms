@@ -8,6 +8,7 @@ import userRoute from "./routes/user.route.js";
 import courseRoute from "./routes/course.route.js";
 import { authenticate, authorizeRoles } from "./middlewares/auth.js";
 import assignmentRoute from "./routes/assignment.route.js";
+import submissionRoute from "./routes/submission.route.js";
 
 dotenv.config();
 
@@ -23,10 +24,7 @@ app.use("/init", initRoute);
 app.use("/auth", authRoute);
 app.use("/users", authenticate, authorizeRoles("admin"), userRoute);
 app.use("/courses", authenticate, courseRoute);
-app.use(
-  "/assignments",
-  authenticate, 
-  assignmentRoute
-);
+app.use("/assignments", authenticate, assignmentRoute);
+app.use("/submissions", authenticate, submissionRoute);
 
 export default app;
