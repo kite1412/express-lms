@@ -16,27 +16,10 @@ model assignments {
   file_url                 String?       @db.VarChar(255)
   created_at               DateTime      @default(now()) @db.Timestamp(0)
   deleted_at               DateTime?     @db.Timestamp(0)
-  created_by               Int
   courses                  courses       @relation(fields: [fk_assignments_course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_assignments_course_id")
-  users                    users         @relation(fields: [created_by], references: [user_id], onDelete: Cascade, map: "fk_assignments_user_id")
   submissions              submissions[]
 
   @@index([fk_assignments_course_id], map: "fk_course_id_idx")
-  @@index([created_by], map: "fk_assignments_user_id_idx")
-}
-
-model attendance {
-  attendance_id             Int               @id @default(autoincrement())
-  fk_attendances_course_id  Int
-  fk_attendances_student_id Int
-  status                    attendance_status
-  date                      DateTime          @db.Date
-  deleted_at                DateTime?         @db.Timestamp(0)
-  courses                   courses           @relation(fields: [fk_attendances_course_id], references: [course_id], onDelete: Cascade, map: "fk_attendances_id")
-  users                     users             @relation(fields: [fk_attendances_student_id], references: [user_id], onDelete: Cascade, map: "fk_attendances_student_id")
-
-  @@index([fk_attendances_course_id], map: "course_id_idx")
-  @@index([fk_attendances_student_id], map: "student_id_idx")
 }
 
 model course_members {
@@ -62,7 +45,7 @@ model courses {
   course_img            String?          @db.VarChar(255)
   deleted_at            DateTime?        @db.Timestamp(0)
   assignments           assignments[]
-  attendance            attendance[]
+  attendances           attendances[]
   course_members        course_members[]
   users                 users            @relation(fields: [fk_courses_teacher_id], references: [user_id], onDelete: Cascade, map: "fk_courses_teacher_id")
 
@@ -98,26 +81,43 @@ model submissions {
 }
 
 model users {
-  user_id         Int              @id @default(autoincrement())
-  name            String           @db.VarChar(45)
-  email           String           @unique(map: "email_UNIQUE") @db.VarChar(100)
-  password        String           @db.VarChar(255)
-  role            users_role
-  created_at      DateTime         @default(now()) @db.Timestamp(0)
-  profile_picture String?          @db.VarChar(255)
-  deleted_at      DateTime?        @db.Timestamp(0)
-  assignments     assignments[]
-  attendance      attendance[]
-  course_members  course_members[]
-  courses         courses[]
-  grades          grades[]
-  submissions     submissions[]
+  user_id            Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(45)
+  email              String               @unique(map: "email_UNIQUE") @db.VarChar(100)
+  password           String               @db.VarChar(255)
+  role               users_role
+  created_at         DateTime             @default(now()) @db.Timestamp(0)
+  profile_picture    String?              @db.VarChar(255)
+  deleted_at         DateTime?            @db.Timestamp(0)
+  attendance_records attendance_records[]
+  course_members     course_members[]
+  courses            courses[]
+  grades             grades[]
+  submissions        submissions[]
 }
 
-enum attendance_status {
-  present
-  permission
-  alpha
+model attendance_records {
+  attendance_record_id                 Int                       @id @default(autoincrement())
+  fk_attendance_records_student_id     Int?
+  fk_attendance_records_attendances_id Int?
+  status                               attendance_records_status
+  fill_date                            DateTime                  @default(now()) @db.DateTime(0)
+  users                                users?                    @relation(fields: [fk_attendance_records_student_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "attendance_records_ibfk_1")
+  attendances                          attendances?              @relation(fields: [fk_attendance_records_attendances_id], references: [attendance_id], onDelete: NoAction, onUpdate: NoAction, map: "attendance_records_ibfk_2")
+
+  @@index([fk_attendance_records_attendances_id], map: "fk_attendance_records_attendances_id")
+  @@index([fk_attendance_records_student_id], map: "fk_attendance_records_student_id")
+}
+
+model attendances {
+  attendance_id            Int                  @id @default(autoincrement())
+  fk_attendances_course_id Int
+  deleted_at               DateTime?            @db.Timestamp(0)
+  deadline                 DateTime?            @db.Date
+  attendance_records       attendance_records[]
+  courses                  courses              @relation(fields: [fk_attendances_course_id], references: [course_id], onDelete: Cascade, map: "fk_attendances_id")
+
+  @@index([fk_attendances_course_id], map: "course_id_idx")
 }
 
 enum course_members_role {
@@ -130,4 +130,11 @@ enum users_role {
   admin
   teacher
   student
+}
+
+enum attendance_records_status {
+  absent
+  present
+  excused
+  late
 }
