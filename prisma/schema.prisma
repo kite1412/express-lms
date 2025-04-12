@@ -16,10 +16,13 @@ model assignments {
   file_url                 String?       @db.VarChar(255)
   created_at               DateTime      @default(now()) @db.Timestamp(0)
   deleted_at               DateTime?     @db.Timestamp(0)
+  created_by               Int
   courses                  courses       @relation(fields: [fk_assignments_course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_assignments_course_id")
+  users                    users         @relation(fields: [created_by], references: [user_id], onDelete: Cascade, map: "fk_assignments_user_id")
   submissions              submissions[]
 
   @@index([fk_assignments_course_id], map: "fk_course_id_idx")
+  @@index([created_by], map: "fk_assignments_user_id_idx")
 }
 
 model attendance {
@@ -103,6 +106,7 @@ model users {
   created_at      DateTime         @default(now()) @db.Timestamp(0)
   profile_picture String?          @db.VarChar(255)
   deleted_at      DateTime?        @db.Timestamp(0)
+  assignments     assignments[]
   attendance      attendance[]
   course_members  course_members[]
   courses         courses[]

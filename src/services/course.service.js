@@ -58,7 +58,7 @@ export const updateCourseService = async (id, newCourseData) => {
 
   return await prisma.courses.update({
     where: {
-      course_id: id,
+      course_id: Number(id),
     },
     data: {
       name: newCourseData.name,
@@ -75,7 +75,7 @@ export const deleteCourseService = async (id) => {
 
   return await prisma.courses.update({
     where: {
-      course_id: id,
+      course_id: Number(id),
     },
     data: {
       deleted_at: new Date(),
