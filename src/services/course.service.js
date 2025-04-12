@@ -10,6 +10,14 @@ const findActiveCourseById = async (id) => {
   });
 };
 
+export const findActiveCourseByIdAndThrow = async (id) => {
+  const res = await findActiveCourseById(id);
+  if (!res) {
+    throw new Error("Course not found");
+  }
+  return res;
+};
+
 export const getAllCoursesService = async () => {
   return await prisma.courses.findMany({
     where: { deleted_at: null },
