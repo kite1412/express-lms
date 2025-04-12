@@ -46,3 +46,5 @@ submissionRoute.delete(
   authorizeRoles("admin", "teacher", "student"),
   deleteSubmission
 );
+
+export default submissionRoute;

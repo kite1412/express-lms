@@ -10,7 +10,7 @@ import {
 export const getAllSubmissionsByAssignment = async (req, res) => {
   try {
     const submissions = await getAllSubmissionsByAssignmentService(
-      req.params.assignmentId
+      req.query.assignmentId
     );
     res.json({
       success: true,
@@ -24,6 +24,7 @@ export const getAllSubmissionsByAssignment = async (req, res) => {
 export const getSubmissionById = async (req, res) => {
   try {
     const submission = await getSubmissionByIdService(req.params.submissionId);
+
     if (!submission) {
       return res
         .status(404)
@@ -41,7 +42,7 @@ export const getSubmissionById = async (req, res) => {
 export const getMySubmission = async (req, res) => {
   try {
     const submission = await getMySubmissionService(
-      req.params.assignmentId,
+      req.query.assignmentId,
       req.user.user_id
     );
     res.json({
@@ -56,7 +57,7 @@ export const getMySubmission = async (req, res) => {
 export const createSubmission = async (req, res) => {
   try {
     const submission = await createSubmissionService(
-      req.params.assignmentId,
+      req.query.assignmentId,
       req.user.user_id,
       req.body
     );
