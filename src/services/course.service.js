@@ -28,15 +28,13 @@ export const getAllCoursesService = async () => {
 };
 
 export const getCourseByIdService = async (id) => {
-  if (!(await findActiveCourseById(id))) {
+  const course = await findActiveCourseById(id);
+
+  if (!course) {
     throw new Error("Course not found");
   }
 
-  return await prisma.courses.findUnique({
-    where: {
-      course_id: Number(id),
-    },
-  });
+  return course;
 };
 
 export const createCourseService = async (newCourseData, teacherData) => {
