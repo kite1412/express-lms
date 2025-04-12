@@ -26,7 +26,6 @@ app.use("/courses", authenticate, courseRoute);
 app.use(
   "/assignments",
   authenticate, 
-  authorizeRoles("teacher", "admin"), 
   assignmentRoute
 );
 
