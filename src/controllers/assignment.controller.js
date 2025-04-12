@@ -1,4 +1,4 @@
-import { createAssignmentService, getAssignmentsByCourseIdService } from "../services/assignment.service.js";
+import { createAssignmentService, getAssignmentByIdService, getAssignmentsByCourseIdService } from "../services/assignment.service.js";
 import { sendServerErrorJson } from "../utils/responses.js";
 
 export const getAssigmentsByCourseId = async (req, res) => {
@@ -17,7 +17,7 @@ export const createAssignment = async (req, res) => {
   try {
     const body = req.body; 
     const newAssignment = await createAssignmentService({
-      courseId: Number(req.params.courseId) ?? 0,
+      courseId: Number(body.courseId) ?? 0,
       title: body.title,
       description: body.description,
       deadline: new Date(body.deadline),
@@ -27,6 +27,19 @@ export const createAssignment = async (req, res) => {
       success: true,
       data: newAssignment
     })
+  } catch (e) {
+    sendServerErrorJson(res, e.message);
+  }
+}
+
+export const getAssignmentById = async (req, res) => {
+  try {
+    const assignment = await getAssignmentByIdService(req.params.id);
+
+    res.json({
+      success: true,
+      data: assignment
+    });
   } catch (e) {
     sendServerErrorJson(res, e.message);
   }

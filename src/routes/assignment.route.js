@@ -1,7 +1,8 @@
 import express from "express";
 import {
   createAssignment,
-  getAssigmentsByCourseId
+  getAssigmentsByCourseId,
+  getAssignmentById
 } from "../controllers/assignment.controller.js";
 import { authorizeRoles } from "../middlewares/auth.js";
 
@@ -13,5 +14,9 @@ assignmentRoute.post(
   authorizeRoles("teacher", "admin"),
   createAssignment
 );
+assignmentRoute.get(
+  "/:id", 
+  getAssignmentById
+)
 
 export default assignmentRoute;

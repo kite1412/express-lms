@@ -28,3 +28,11 @@ export const createAssignmentService = async ({
     }
   })
 };
+
+export const getAssignmentByIdService = async (id) => {
+  return await prisma.assignments.findUnique({
+    where: {
+      assignment_id: Number(id)
+    }
+  })
+};
