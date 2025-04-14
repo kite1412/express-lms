@@ -24,7 +24,7 @@ export const deleteMemberFromCourse = async (req, res) => {
   try {
     const result = await deleteMemberFromCourseService(
       req.params.courseId,
-      req.user.user_id
+      req.query.userId
     );
     res.json({
       success: true,
