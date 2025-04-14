@@ -6,6 +6,13 @@ const findActiveCourseById = async (id) => {
     where: {
       course_id: Number(id),
       deleted_at: null,
+      include: {
+        users: {
+          select: {
+            name: true,
+          },
+        },
+      },
     },
   });
 };
@@ -22,13 +29,9 @@ export const getAllCoursesService = async () => {
   return await prisma.courses.findMany({
     where: { deleted_at: null },
     include: {
-      course_members: {
-        include: {
-          users: {
-            select: {
-              name: true,
-            },
-          },
+      users: {
+        select: {
+          name: true,
         },
       },
     },
@@ -140,6 +143,13 @@ export const getMyCoursesService = async (userData) => {
       course_members: {
         some: {
           fk_course_members_user_id: userId,
+        },
+      },
+    },
+    include: {
+      users: {
+        select: {
+          name: true,
         },
       },
     },
