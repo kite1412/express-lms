@@ -5,10 +5,15 @@ import {
 
 export const getCoursemembers = async (req, res) => {
   try {
-    const courseMembers = getCourseMembersService(req.params.courseId);
+    const courseMembers = await getCourseMembersService(req.params.courseId);
+    const filteredMembers = courseMembers.map((member) => ({
+      name: member.users.name,
+      role: member.role,
+      joined_at: member.joined_at,
+    }));
     res.json({
       success: true,
-      data: courseMembers,
+      data: filteredMembers,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -17,7 +22,7 @@ export const getCoursemembers = async (req, res) => {
 
 export const deleteMemberFromCourse = async (req, res) => {
   try {
-    const result = deleteMemberFromCourseService(
+    const result = await deleteMemberFromCourseService(
       req.params.courseId,
       req.user.user_id
     );

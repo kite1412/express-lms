@@ -7,8 +7,10 @@ export const getCourseMembersService = async (courseId) => {
     },
     include: {
       users: {
-        name: true,
-        role: true,
+        select: {
+          name: true,
+          role: true,
+        },
       },
     },
   });
