@@ -98,12 +98,12 @@ model users {
 
 model attendance_records {
   attendance_record_id                 Int                       @id @default(autoincrement())
-  fk_attendance_records_student_id     Int?
-  fk_attendance_records_attendances_id Int?
+  fk_attendance_records_student_id     Int
+  fk_attendance_records_attendances_id Int
   status                               attendance_records_status
   fill_date                            DateTime                  @default(now()) @db.DateTime(0)
-  users                                users?                    @relation(fields: [fk_attendance_records_student_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "attendance_records_ibfk_1")
-  attendances                          attendances?              @relation(fields: [fk_attendance_records_attendances_id], references: [attendance_id], onDelete: NoAction, onUpdate: NoAction, map: "attendance_records_ibfk_2")
+  users                                users                     @relation(fields: [fk_attendance_records_student_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "attendance_records_ibfk_1")
+  attendances                          attendances               @relation(fields: [fk_attendance_records_attendances_id], references: [attendance_id], onDelete: NoAction, onUpdate: NoAction, map: "attendance_records_ibfk_2")
 
   @@index([fk_attendance_records_attendances_id], map: "fk_attendance_records_attendances_id")
   @@index([fk_attendance_records_student_id], map: "fk_attendance_records_student_id")
@@ -114,6 +114,8 @@ model attendances {
   fk_attendances_course_id Int
   deleted_at               DateTime?            @db.Timestamp(0)
   deadline                 DateTime?            @db.Date
+  notes                    String               @db.VarChar(255)
+  created_at               DateTime             @default(now()) @db.DateTime(0)
   attendance_records       attendance_records[]
   courses                  courses              @relation(fields: [fk_attendances_course_id], references: [course_id], onDelete: Cascade, map: "fk_attendances_id")
 
