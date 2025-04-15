@@ -1,10 +1,43 @@
 import prisma from "../config/database.js";
 import { findActiveCourseByIdAndThrow } from "./course.service.js";
+import { getMyCourses } from "../controllers/course.controller.js";
 
 export const getAssignmentsByCourseIdService = async (courseId) => {
   return await prisma.assignments.findMany({
     where: {
       fk_assignments_course_id: Number(courseId),
+    },
+  });
+};
+
+export const getMyAssignmentsService = async (userId) => {
+  const courses = await prisma.courses.findMany({
+    where: {
+      deleted_at: null,
+      course_members: {
+        some: {
+          fk_course_members_user_id: Number(userId),
+        },
+      },
+    },
+  });
+
+  const courseIds = courses.map((course) => course.course_id);
+
+  if (courseIds.length === 0) {
+    throw new Error("User is not enrolled in any courses");
+  }
+
+  return await prisma.assignments.findMany({
+    where: {
+      fk_assignments_course_id: {
+        in: courseIds,
+      },
+    },
+    select: {
+      assignment_id: true,
+      title: true,
+      deadline: true,
     },
   });
 };

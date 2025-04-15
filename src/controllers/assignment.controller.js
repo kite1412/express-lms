@@ -5,6 +5,7 @@ import {
   getAssignmentByIdService,
   getAssignmentsByCourseIdService,
   updateAssignmentService,
+  getMyAssignmentsService,
 } from "../services/assignment.service.js";
 import { sendServerErrorJson } from "../utils/responses.js";
 
@@ -32,6 +33,15 @@ export const getAssigmentsByCourseId = async (req, res) => {
       req.params.courseId
     );
 
+    successResponse(res, assignments);
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
+
+export const getMyAssignments = async (req, res) => {
+  try {
+    const assignments = await getMyAssignmentsService(req.user.user_id);
     successResponse(res, assignments);
   } catch (e) {
     errorResponse(res, e);
