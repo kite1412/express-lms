@@ -12,9 +12,17 @@ export const getAllSubmissionsByAssignment = async (req, res) => {
     const submissions = await getAllSubmissionsByAssignmentService(
       req.query.assignmentId
     );
+    const filteredSubmissions = submissions.map((submission) => ({
+      submission_id: submission.submission_id,
+      assignment_id: submission.fk_submissions_assignment_id,
+      file_url: submission.file_url,
+      submitted_at: submission.submitted_at,
+      owner: submission.users,
+      grades: submission.grades,
+    }));
     res.json({
       success: true,
-      data: submissions,
+      data: filteredSubmissions,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -24,7 +32,14 @@ export const getAllSubmissionsByAssignment = async (req, res) => {
 export const getSubmissionById = async (req, res) => {
   try {
     const submission = await getSubmissionByIdService(req.params.submissionId);
-
+    const filteredSubmission = {
+      submission_id: submission.submission_id,
+      assignment_id: submission.fk_submissions_assignment_id,
+      file_url: submission.file_url,
+      submitted_at: submission.submitted_at,
+      owner: submission.users,
+      grades: submission.grades,
+    };
     if (!submission) {
       return res
         .status(404)
@@ -32,7 +47,7 @@ export const getSubmissionById = async (req, res) => {
     }
     res.json({
       success: true,
-      data: submission,
+      data: filteredSubmission,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -42,12 +57,20 @@ export const getSubmissionById = async (req, res) => {
 export const getMySubmission = async (req, res) => {
   try {
     const submission = await getMySubmissionService(
-      req.query.assignmentId,
+      req.params.assignmentId,
       req.user.user_id
     );
+    const filteredSubmission = {
+      submission_id: submission.submission_id,
+      assignment_id: submission.fk_submissions_assignment_id,
+      file_url: submission.file_url,
+      submitted_at: submission.submitted_at,
+      owner: submission.users,
+      grades: submission.grades,
+    };
     res.json({
       success: true,
-      data: submission,
+      data: filteredSubmission,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -59,7 +82,7 @@ export const createSubmission = async (req, res) => {
     const submission = await createSubmissionService(
       req.query.assignmentId,
       req.user.user_id,
-      req.body
+      req.body.file_url
     );
     res.json({
       success: true,

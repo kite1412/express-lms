@@ -5,7 +5,11 @@ export const getAllSubmissionsByAssignmentService = async (assignmentId) => {
     where: {
       fk_submissions_assignment_id: Number(assignmentId),
     },
-    include: {
+    select: {
+      submission_id: true,
+      fk_submissions_assignment_id: true,
+      file_url: true,
+      submitted_at: true,
       users: {
         select: {
           name: true,
@@ -22,14 +26,40 @@ export const getSubmissionByIdService = async (submissionId) => {
     where: {
       submission_id: Number(submissionId),
     },
+    select: {
+      submission_id: true,
+      fk_submissions_assignment_id: true,
+      file_url: true,
+      submitted_at: true,
+      users: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      grades: true,
+    },
   });
 };
 
 export const getMySubmissionService = async (assignmentId, studentId) => {
   return await prisma.submissions.findFirst({
     where: {
-      fk_submissions_assignment_id: assignmentId,
-      fk_submissions_student_id,
+      fk_submissions_assignment_id: Number(assignmentId),
+      fk_submissions_student_id: studentId,
+    },
+    select: {
+      submission_id: true,
+      fk_submissions_assignment_id: true,
+      file_url: true,
+      submitted_at: true,
+      users: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      grades: true,
     },
   });
 };

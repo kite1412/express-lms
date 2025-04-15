@@ -24,7 +24,7 @@ submissionRoute.get(
 );
 
 submissionRoute.get(
-  "/my-submission",
+  "/my-submission/:assignmentId",
   authorizeRoles("admin", "teacher", "student"),
   getMySubmission
 );

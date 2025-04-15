@@ -11,9 +11,17 @@ import {
 export const getAllCourses = async (req, res) => {
   try {
     const courses = await getAllCoursesService();
+    const filteredCourses = courses.map((course) => ({
+      course_id: course.course_id,
+      name: course.name,
+      description: course.description,
+      code: course.code,
+      course_img: course.course_img,
+      teacher: course.users.name,
+    }));
     res.json({
       success: true,
-      data: courses,
+      data: filteredCourses,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -23,9 +31,17 @@ export const getAllCourses = async (req, res) => {
 export const getCoursebyId = async (req, res) => {
   try {
     const course = await getCourseByIdService(req.params.id);
+    const filteredCourse = {
+      course_id: course.course_id,
+      name: course.name,
+      description: course.description,
+      code: course.code,
+      course_img: course.course_img,
+      teacher: course.users.name,
+    };
     res.json({
       success: true,
-      data: course,
+      data: filteredCourse,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -83,9 +99,17 @@ export const joinCourse = async (req, res) => {
 export const getMyCourses = async (req, res) => {
   try {
     const courses = await getMyCoursesService(req.user);
+    const filteredCourses = courses.map((course) => ({
+      course_id: course.course_id,
+      name: course.name,
+      description: course.description,
+      code: course.code,
+      course_img: course.course_img,
+      teacher: course.users.name,
+    }));
     res.json({
       success: true,
-      data: courses,
+      data: filteredCourses,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

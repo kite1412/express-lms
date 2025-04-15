@@ -4,8 +4,8 @@ import { findActiveCourseByIdAndThrow } from "./course.service.js";
 export const getAssignmentsByCourseIdService = async (courseId) => {
   return await prisma.assignments.findMany({
     where: {
-      fk_assignments_course_id: Number(courseId)
-    }
+      fk_assignments_course_id: Number(courseId),
+    },
   });
 };
 
@@ -14,7 +14,7 @@ export const createAssignmentService = async ({
   title,
   description,
   deadline,
-  fileUrl
+  fileUrl,
 }) => {
   await findActiveCourseByIdAndThrow(courseId);
 
@@ -24,22 +24,22 @@ export const createAssignmentService = async ({
       title: title,
       description: description,
       deadline: deadline,
-      file_url: fileUrl
-    }
-  })
+      file_url: fileUrl,
+    },
+  });
 };
 
 export const getAssignmentByIdService = async (id) => {
   const assignment = await prisma.assignments.findUnique({
     where: {
-      assignment_id: Number(id)
-    }
+      assignment_id: Number(id),
+    },
   });
 
   if (!assignment) {
     throw new HttpError(400, "No assignment with id " + id);
   }
-  
+
   return assignment;
 };
 
@@ -48,14 +48,14 @@ export const updateAssignmentService = async (id, newData) => {
 
   return await prisma.assignments.update({
     where: {
-      assignment_id: Number(id)
+      assignment_id: Number(id),
     },
     data: {
       title: newData.title ?? assignment.title,
       description: newData.description ?? assignment.description,
       deadline: newData.deadline ?? assignment.deadline,
-      file_url: newData.fileUrl ?? assignment.file_url
-    }
+      file_url: newData.fileUrl ?? assignment.file_url,
+    },
   });
 };
 
@@ -64,10 +64,10 @@ export const deleteAssignmentService = async (id) => {
 
   return await prisma.assignments.update({
     where: {
-      assignment_id: Number(id)
+      assignment_id: Number(id),
     },
     data: {
-      deleted_at: new Date()
-    }
+      deleted_at: new Date(),
+    },
   });
 };
