@@ -3,7 +3,7 @@ import {
   deleteMemberFromCourseService,
 } from "../services/member.service.js";
 
-export const getCoursemembers = async (req, res) => {
+export const getCourseMembers = async (req, res) => {
   try {
     const courseMembers = await getCourseMembersService(req.params.courseId);
     const filteredMembers = courseMembers.map((member) => ({
