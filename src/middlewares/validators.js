@@ -94,3 +94,63 @@ export const validateLoginUser = [
     next();
   },
 ];
+
+export const validateCreateGrade = [
+  body("submission_id").isInt().withMessage("Submission ID must be a number"),
+
+  body("score")
+    .isInt({ min: 0, max: 100 })
+    .withMessage("Score must be a number between 0 and 100"),
+
+  body("feedback")
+    .optional({ nullable: true })
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage("Feedback must be at least 3 characters if provided"),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    req.body = _.pick(req.body, [
+      "teacher_id",
+      "submission_id",
+      "score",
+      "feedback",
+    ]);
+
+    next();
+  },
+];
+
+export const validateUpdateGrade = [
+  param("gradeId").isInt().withMessage("Grade ID must be a number"),
+
+  body("score")
+    .isInt({ min: 0, max: 100 })
+    .withMessage("Score must be a number between 0 and 100"),
+
+  body("feedback")
+    .optional({ nullable: true })
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage("Feedback must be at least 3 characters if provided"),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    req.body = _.pick(req.body, ["teacher_id", "score", "feedback"]);
+    next();
+  },
+];

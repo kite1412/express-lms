@@ -10,6 +10,7 @@ import { authenticate, authorizeRoles } from "./middlewares/auth.js";
 import assignmentRoute from "./routes/assignment.route.js";
 import submissionRoute from "./routes/submission.route.js";
 import memberRoute from "./routes/member.route.js";
+import gradeRoute from "./routes/grade.route.js";
 
 dotenv.config();
 
@@ -33,5 +34,6 @@ app.use("/courses", authenticate, courseRoute);
 app.use("/assignments", authenticate, assignmentRoute);
 app.use("/submissions", authenticate, submissionRoute);
 app.use("/members", authenticate, memberRoute);
+app.use("/grades", authenticate, gradeRoute);
 
 export default app;
