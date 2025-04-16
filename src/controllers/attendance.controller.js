@@ -1,19 +1,45 @@
-import { 
-  createAttendanceService, 
-  deleteAttendanceService, 
-  fillAttendanceService, 
-  findAttendanceOrThrow 
-} from "../services/attendance.service.js";
 import {
-  successResponse,
-  errorResponse
-} from "../utils/responses.js";
+  createAttendanceService,
+  deleteAttendanceService,
+  fillAttendanceService,
+  findAttendanceOrThrow,
+  getAttendancesByCourseIdService,
+  getAttendanceRecordsService,
+} from "../services/attendance.service.js";
+import { successResponse, errorResponse } from "../utils/responses.js";
 
 export const getAttendanceById = async (req, res) => {
   try {
     const attendance = await findAttendanceOrThrow(req.params.id);
 
     successResponse(res, attendance);
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
+
+export const getAttendancesByCourseId = async (req, res) => {
+  try {
+    const attendances = await getAttendancesByCourseIdService(
+      req.params.courseId
+    );
+
+    successResponse(res, attendances);
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
+
+export const getAttendanceRecords = async (req, res) => {
+  try {
+    const attendanceRecords = await getAttendanceRecordsService(
+      req.params.attendanceId
+    );
+
+    const filteredAttendanceRecords = attendanceRecords.map((record) => ({
+      attendance_record_id: record.attendance_record_id,
+    }));
+    successResponse(res, attendanceRecords);
   } catch (e) {
     errorResponse(res, e);
   }
@@ -34,9 +60,9 @@ export const fillAttendance = async (req, res) => {
     const body = req.body;
     const newRecord = await fillAttendanceService({
       attendanceId: req.params.id,
-      studentId: body.studentId,
-      isExcused: body.isExcused ?? false
-    })
+      studentId: req.user.user_id,
+      isExcused: body.isExcused ?? false,
+    });
 
     successResponse(res, newRecord);
   } catch (e) {

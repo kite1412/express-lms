@@ -6,8 +6,8 @@ export const findAttendanceOrThrow = async (id) => {
   const res = await prisma.attendances.findFirst({
     where: {
       attendance_id: Number(id),
-      deleted_at: null
-    }
+      deleted_at: null,
+    },
   });
 
   if (!res) {
@@ -15,27 +15,35 @@ export const findAttendanceOrThrow = async (id) => {
   }
 
   return res;
-}
+};
+
+export const getAttendancesByCourseIdService = async (courseId) => {
+  return await prisma.attendances.findMany({
+    where: {
+      fk_attendances_course_id: Number(courseId),
+    },
+  });
+};
 
 export const createAttendanceService = async ({
   courseId,
   notes,
-  deadline
+  deadline,
 }) => {
-  return prisma.attendances.create({
+  return await prisma.attendances.create({
     data: {
       fk_attendances_course_id: Number(courseId),
       notes: notes ?? null,
-      deadline: deadline ?? null   
-    }
-  })
+      deadline: deadline ?? null,
+    },
+  });
 };
 
 const resolveAttendanceStatus = (deadline) => {
   const now = new Date();
 
   if (deadline) {
-    if (now < deadline) return "present"
+    if (now < deadline) return "present";
     else return "late";
   } else return "present";
 };
@@ -43,7 +51,7 @@ const resolveAttendanceStatus = (deadline) => {
 export const fillAttendanceService = async ({
   attendanceId,
   studentId,
-  isExcused
+  isExcused,
 }) => {
   const res = await findAttendanceOrThrow(attendanceId);
 
@@ -51,20 +59,39 @@ export const fillAttendanceService = async ({
     data: {
       fk_attendance_records_attendances_id: Number(attendanceId),
       fk_attendance_records_student_id: Number(studentId),
-      status: isExcused ? "excused" : resolveAttendanceStatus(res.deadline)
-    }
+      status: isExcused ? "excused" : resolveAttendanceStatus(res.deadline),
+    },
+  });
+};
+
+export const getAttendanceRecordsService = async (attendanceId) => {
+  return await prisma.attendance_records.findMany({
+    where: {
+      fk_attendance_records_attendances_id: Number(attendanceId),
+    },
+    select: {
+      attendance_record_id: true,
+      status: true,
+      fill_date: true,
+      users: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
   });
 };
 
 export const deleteAttendanceService = async (id) => {
   await findAttendanceOrThrow(id);
 
-  return prisma.attendances.update({
+  return await prisma.attendances.update({
     where: {
-      attendance_id: Number(id)
+      attendance_id: Number(id),
     },
     data: {
-      deleted_at: new Date()
-    }
+      deleted_at: new Date(),
+    },
   });
 };
