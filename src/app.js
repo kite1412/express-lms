@@ -12,6 +12,7 @@ import submissionRoute from "./routes/submission.route.js";
 import memberRoute from "./routes/member.route.js";
 import gradeRoute from "./routes/grade.route.js";
 import attendanceRoute from "./routes/attendance.route.js";
+import materialRoute from "./routes/materials.route.js";
 
 dotenv.config();
 
@@ -37,5 +38,6 @@ app.use("/submissions", authenticate, submissionRoute);
 app.use("/members", authenticate, memberRoute);
 app.use("/grades", authenticate, gradeRoute);
 app.use("/attendances", authenticate, attendanceRoute);
+app.use("/materials", authenticate, materialRoute);
 
 export default app;

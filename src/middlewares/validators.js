@@ -154,3 +154,71 @@ export const validateUpdateGrade = [
     next();
   },
 ];
+
+export const validateCreateMaterial = [
+  body("course_id").isInt().withMessage("Course ID must be a number"),
+
+  body("title")
+    .isString()
+    .withMessage("Title must be a string")
+    .isLength({ min: 3 })
+    .withMessage("Title must be at least 3 characters long"),
+
+  body("description")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("Description must be a string"),
+
+  body("file_url").isURL().withMessage("File URL must be a valid URL"),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    req.body = _.pick(req.body, [
+      "course_id",
+      "title",
+      "description",
+      "file_url",
+    ]);
+    next();
+  },
+];
+
+export const validateUpdateMaterial = [
+  param("materialId").isInt().withMessage("Material ID must be a number"),
+
+  body("title")
+    .optional()
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage("Title must be at least 3 characters if provided"),
+
+  body("description")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("Description must be a string"),
+
+  body("file_url")
+    .optional()
+    .isURL()
+    .withMessage("File URL must be a valid URL"),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    req.body = _.pick(req.body, ["title", "description", "file_url"]);
+    next();
+  },
+];
