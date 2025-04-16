@@ -23,7 +23,7 @@ const findActiveCourseById = async (id) => {
   });
 };
 
-export const findActiveCourseByIdAndThrow = async (id) => {
+export const findActiveCourseByIdOrThrow = async (id) => {
   const res = await findActiveCourseById(id);
   if (!res) {
     throw new Error("Course not found");
