@@ -7,25 +7,10 @@ import {
   updateAssignmentService,
   getMyAssignmentsService,
 } from "../services/assignment.service.js";
-import { sendServerErrorJson } from "../utils/responses.js";
-
-const errorResponse = (res, err) => {
-  if (err instanceof HttpError) {
-    res.status(err.code).json({
-      success: false,
-      message: err.message,
-    });
-  } else {
-    sendServerErrorJson(res, err.message);
-  }
-};
-
-const successResponse = (res, data) => {
-  res.json({
-    success: true,
-    data: data,
-  });
-};
+import {
+  errorResponse,
+  successResponse
+} from "../utils/responses.js";
 
 export const getAssigmentsByCourseId = async (req, res) => {
   try {

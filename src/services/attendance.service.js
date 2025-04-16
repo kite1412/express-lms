@@ -1,14 +1,7 @@
 import prisma from "../config/database.js";
 import HttpError from "../errors/HttpError.js";
 
-const statuses = [
-  "absent",
-  "present",
-  "excused",
-  "late"
-];
-
-const findAttendanceOrThrow = async (id) => {
+export const findAttendanceOrThrow = async (id) => {
   const res = await prisma.attendances.findFirst({
     where: {
       attendance_id: id,
@@ -63,9 +56,11 @@ export const fillAttendanceService = async ({
 };
 
 export const deleteAttendanceService = async (id) => {
+  await findAttendanceOrThrow(id);
+
   return prisma.attendances.delete({
     where: {
       attendance_id: id
     }
-  })
+  });
 };
