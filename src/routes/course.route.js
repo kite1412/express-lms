@@ -48,6 +48,6 @@ courseRoute.get(
   getMyCourses
 );
 
-courseRoute.get("/:id", authenticate, authorizeRoles("admin"), getCoursebyId);
+courseRoute.get("/:id", authenticate, getCoursebyId);
 
 export default courseRoute;
