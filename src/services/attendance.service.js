@@ -1,5 +1,6 @@
 import prisma from "../config/database.js";
 import HttpError from "../errors/HttpError.js";
+import { findActiveCourseByIdOrThrow } from "./course.service.js";
 
 export const findAttendanceOrThrow = async (id) => {
   const res = await prisma.attendances.findFirst({
@@ -58,9 +59,12 @@ export const fillAttendanceService = async ({
 export const deleteAttendanceService = async (id) => {
   await findAttendanceOrThrow(id);
 
-  return prisma.attendances.delete({
+  return prisma.attendances.update({
     where: {
       attendance_id: Number(id)
+    },
+    data: {
+      deleted_at: new Date()
     }
   });
 };
