@@ -18,11 +18,17 @@ materialRoute.get("/course/:courseId", getAllMaterialsByCourseId);
 
 materialRoute.get("/:materialId", getMaterialById);
 
-materialRoute.post("/", authorizeRoles("admin", "teacher"), createMaterial);
+materialRoute.post(
+  "/",
+  authorizeRoles("admin", "teacher"),
+  validateCreateMaterial,
+  createMaterial
+);
 
 materialRoute.patch(
   "/:materialId",
   authorizeRoles("admin", "teacher"),
+  validateUpdateMaterial,
   updateMaterial
 );
 
