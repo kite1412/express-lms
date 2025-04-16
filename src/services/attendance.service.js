@@ -4,7 +4,7 @@ import HttpError from "../errors/HttpError.js";
 export const findAttendanceOrThrow = async (id) => {
   const res = await prisma.attendances.findFirst({
     where: {
-      attendance_id: id,
+      attendance_id: Number(id),
       deleted_at: null
     }
   });
@@ -23,7 +23,7 @@ export const createAttendanceService = async ({
 }) => {
   return prisma.attendances.create({
     data: {
-      fk_attendances_course_id: courseId,
+      fk_attendances_course_id: Number(courseId),
       notes: notes ?? null,
       deadline: deadline ?? null   
     }
@@ -48,8 +48,8 @@ export const fillAttendanceService = async ({
 
   return prisma.attendance_records.create({
     data: {
-      fk_attendance_records_attendances_id: attendanceId,
-      fk_attendance_records_student_id: studentId,
+      fk_attendance_records_attendances_id: Number(attendanceId),
+      fk_attendance_records_student_id: Number(studentId),
       status: isExcused ? "excused" : resolveAttendanceStatus(res.deadline)
     }
   });
@@ -60,7 +60,7 @@ export const deleteAttendanceService = async (id) => {
 
   return prisma.attendances.delete({
     where: {
-      attendance_id: id
+      attendance_id: Number(id)
     }
   });
 };
