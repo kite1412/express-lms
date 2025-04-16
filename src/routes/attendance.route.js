@@ -16,6 +16,10 @@ attendanceRoute.post(
   createAttendance
 );
 attendanceRoute.post("/:id", fillAttendance);
-attendanceRoute.delete("/:id", deleteAttendance);
+attendanceRoute.delete(
+  "/:id",
+  authorizeRoles("teacher", "admin"),
+  deleteAttendance
+);
 
 export default attendanceRoute;
