@@ -30,7 +30,7 @@ app.use(
 //routes
 app.use("/init", initRoute);
 app.use("/auth", authRoute);
-app.use("/users", authenticate, authorizeRoles("admin"), userRoute);
+app.use("/users", authenticate, userRoute);
 app.use("/courses", authenticate, courseRoute);
 app.use("/assignments", authenticate, assignmentRoute);
 app.use("/submissions", authenticate, submissionRoute);
