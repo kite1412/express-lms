@@ -7,6 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model materials {
+  material_id            Int       @id @default(autoincrement())
+  fk_materials_course_id Int
+  fk_materials_teacher_id Int
+  title                  String    @db.VarChar(255)
+  description            String?   @db.Text
+  file_url               String?   @db.VarChar(255)
+  created_at             DateTime  @default(now()) @db.Timestamp(0)
+  deleted_at             DateTime? @db.Timestamp(0)
+  courses                courses   @relation(fields: [fk_materials_course_id], references: [course_id], onDelete: Cascade, map: "fk_materials_course_id")
+  users   users   @relation(fields: [fk_materials_teacher_id], references: [user_id], onDelete: Cascade, map: "fk_materials_teacher_id")
+
+  @@index([fk_materials_course_id], map: "fk_materials_course_idx")
+  @@index([fk_materials_teacher_id], map: "fk_teacher_id_idx")
+}
+
 model assignments {
   assignment_id            Int           @id @default(autoincrement())
   fk_assignments_course_id Int
@@ -47,6 +63,7 @@ model courses {
   assignments           assignments[]
   attendances           attendances[]
   course_members        course_members[]
+  materials materials[]
   users                 users            @relation(fields: [fk_courses_teacher_id], references: [user_id], onDelete: Cascade, map: "fk_courses_teacher_id")
 
   @@index([fk_courses_teacher_id], map: "teacher_id_idx")
@@ -94,6 +111,7 @@ model users {
   courses            courses[]
   grades             grades[]
   submissions        submissions[]
+  materials materials[]
 }
 
 model attendance_records {
