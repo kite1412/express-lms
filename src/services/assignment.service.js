@@ -1,6 +1,5 @@
 import prisma from "../config/database.js";
-import { findActiveCourseByIdAndThrow } from "./course.service.js";
-import { getMyCourses } from "../controllers/course.controller.js";
+import { findActiveCourseByIdOrThrow } from "./course.service.js";
 
 export const getAssignmentsByCourseIdService = async (courseId) => {
   return await prisma.assignments.findMany({
@@ -49,7 +48,7 @@ export const createAssignmentService = async ({
   deadline,
   fileUrl,
 }) => {
-  await findActiveCourseByIdAndThrow(courseId);
+  await findActiveCourseByIdOrThrow(courseId);
 
   return await prisma.assignments.create({
     data: {
