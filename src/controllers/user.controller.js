@@ -5,6 +5,7 @@ import {
   updateUserService,
   deleteUserService,
   updateUserPasswordService,
+  updateMyPasswordService,
 } from "../services/user.service.js";
 import jwt from "jsonwebtoken";
 import { errorResponse, successResponse } from "../utils/responses.js";
@@ -87,11 +88,26 @@ export const getMyInfo = async (req, res) => {
   try {
     if (tokenHeader || tokenCookie) {
       const id = jwt.decode(tokenCookie ?? tokenHeader.split(" ")[1]).user_id;
-  
+
       const user = await getUserByIdService(id);
-  
+
       successResponse(res, user);
     }
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
+
+export const updateMyPassword = async (req, res) => {
+  try {
+    const { current_password, new_password, confirm_password } = req.body;
+    const user = await updateMyPasswordService(
+      req.user.user_id,
+      current_password,
+      new_password,
+      confirm_password
+    );
+    successResponse(res, user);
   } catch (e) {
     errorResponse(res, e);
   }
