@@ -12,6 +12,7 @@ import {
   deleteCourse,
   joinCourse,
   getMyCourses,
+  getAllContentsByCourseId,
 } from "../controllers/course.controller.js";
 import { authenticate, authorizeRoles } from "../middlewares/auth.js";
 
@@ -48,6 +49,7 @@ courseRoute.get(
   getMyCourses
 );
 
-courseRoute.get("/:id", authenticate, getCoursebyId);
+courseRoute.get("/contents/:courseId", getAllContentsByCourseId);
+courseRoute.get("/:id", getCoursebyId);
 
 export default courseRoute;

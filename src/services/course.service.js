@@ -173,3 +173,47 @@ export const getMyCoursesService = async (userData) => {
     },
   });
 };
+
+export const getAllContentsByCourseIdService = async (courseId) => {
+  await findActiveCourseByIdOrThrow(courseId);
+
+  return await prisma.courses.findFirst({
+    where: {
+      course_id: Number(courseId),
+    },
+    select: {
+      attendances: {
+        where: {
+          deleted_at: null,
+        },
+        select: {
+          attendance_id: true,
+          notes: true,
+          deadline: true,
+          created_at: true,
+        },
+      },
+      materials: {
+        where: {
+          deleted_at: null,
+        },
+        select: {
+          material_id: true,
+          title: true,
+          created_at: true,
+        },
+      },
+      assignments: {
+        where: {
+          deleted_at: null,
+        },
+        select: {
+          assignment_id: true,
+          title: true,
+          deadline: true,
+          created_at: true,
+        },
+      },
+    },
+  });
+};

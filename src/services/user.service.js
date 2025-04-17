@@ -1,5 +1,5 @@
 import prisma from "../config/database.js";
-import { hashPassword } from "../utils/hashPassword.js";
+import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 
 const findActiveUserById = async (id) => {
   return await prisma.users.findFirst({
@@ -73,7 +73,7 @@ export const updateUserPasswordService = async (id, password) => {
     throw new Error("User not found");
   }
 
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = await hashPassword(password);
 
   return await prisma.users.update({
     where: {
@@ -81,6 +81,61 @@ export const updateUserPasswordService = async (id, password) => {
     },
     data: {
       password: hashedPassword,
+    },
+  });
+};
+
+export const updateMyPasswordService = async (
+  userId,
+  currentPassword,
+  newPassword,
+  confirmPassword
+) => {
+  const user = await findActiveUserById(Number(userId));
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const isPasswordMatch = await comparePassword(currentPassword, user.password);
+  if (!isPasswordMatch) {
+    throw new Error("Password incorrect");
+  }
+
+  if (newPassword !== confirmPassword) {
+    throw new Error("Passowrd do not match");
+  }
+
+  const isSamePassword = await comparePassword(newPassword, user.password);
+  if (isSamePassword) {
+    throw new Error("The new password cannot be the same as the old password.");
+  }
+
+  const hashedPassword = await hashPassword(newPassword);
+
+  return await prisma.users.update({
+    where: {
+      user_id: Number(userId),
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+};
+
+export const updateMyNameService = async (userId, newName) => {
+  const user = await findActiveUserById(userId);
+
+  if (user.name === newName) {
+    throw new Error("Must be different name");
+  }
+
+  return await prisma.users.update({
+    where: {
+      user_id: userId,
+    },
+    data: {
+      name: newName,
     },
   });
 };
