@@ -6,6 +6,7 @@ import {
   deleteCourseService,
   joinCourseService,
   getMyCoursesService,
+  getAllContentsByCourseIdService,
 } from "../services/course.service.js";
 
 export const getAllCourses = async (req, res) => {
@@ -110,6 +111,18 @@ export const getMyCourses = async (req, res) => {
     res.json({
       success: true,
       data: filteredCourses,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getAllContentsByCourseId = async (req, res) => {
+  try {
+    const contents = await getAllContentsByCourseIdService(req.params.courseId);
+    res.json({
+      success: true,
+      data: contents,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
