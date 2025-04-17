@@ -14,7 +14,7 @@ const userRoute = express.Router();
 
 userRoute.get("/me", getMyInfo);
 
-userRoute.use(authorizeRoles("admin"))
+userRoute.use(authorizeRoles("admin"));
 userRoute.get("/", getAllUser);
 userRoute.get("/:id", getUserById);
 userRoute.post("/", createUser);
