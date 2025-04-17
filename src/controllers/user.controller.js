@@ -6,6 +6,7 @@ import {
   deleteUserService,
   updateUserPasswordService,
   updateMyPasswordService,
+  updateMyNameService,
 } from "../services/user.service.js";
 import jwt from "jsonwebtoken";
 import { errorResponse, successResponse } from "../utils/responses.js";
@@ -107,6 +108,16 @@ export const updateMyPassword = async (req, res) => {
       new_password,
       confirm_password
     );
+    successResponse(res, user);
+  } catch (e) {
+    errorResponse(res, e);
+  }
+};
+
+export const updateMyName = async (req, res) => {
+  try {
+    const { new_name } = req.body;
+    const user = await updateMyNameService(req.user.user_id, new_name);
     successResponse(res, user);
   } catch (e) {
     errorResponse(res, e);

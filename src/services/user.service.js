@@ -122,3 +122,20 @@ export const updateMyPasswordService = async (
     },
   });
 };
+
+export const updateMyNameService = async (userId, newName) => {
+  const user = await findActiveUserById(userId);
+
+  if (user.name === newName) {
+    throw new Error("Must be different name");
+  }
+
+  return await prisma.users.update({
+    where: {
+      user_id: userId,
+    },
+    data: {
+      name: newName,
+    },
+  });
+};
